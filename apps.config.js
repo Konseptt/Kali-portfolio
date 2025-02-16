@@ -7,6 +7,9 @@ import { displayTrash } from './components/apps/trash';
 import { displayGedit } from './components/apps/gedit';
 import { displayAboutVivek } from './components/apps/vivek';
 import { displayTerminalCalc } from './components/apps/calc';
+import { displayWeather } from './components/apps/weather'; // P01fe
+import { displayNotes } from './components/apps/notes'; // Pee7f
+import { displayCalendar } from './components/apps/calendar'; // P6bb1
 
 const apps = [
     {
@@ -89,6 +92,33 @@ const apps = [
         favourite: false,
         desktop_shortcut: true,
         screen: displayGedit,
+    },
+    {
+        id: "weather",
+        title: "Weather",
+        icon: './themes/Yaru/apps/weather.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayWeather,
+    },
+    {
+        id: "notes",
+        title: "Notes",
+        icon: './themes/Yaru/apps/notes.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayNotes,
+    },
+    {
+        id: "calendar",
+        title: "Calendar",
+        icon: './themes/Yaru/apps/calendar.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayCalendar,
     },
 ]
 
