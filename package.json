@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "next build && cp -r out/* docs/"
+    "deploy": "next build && xcopy /E /I /Y out\\* docs\\"
   },
   "engines": {
     "node": ">=16.x"
