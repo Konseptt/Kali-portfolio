@@ -10,6 +10,9 @@ import { displayTerminalCalc } from './components/apps/calc';
 import { displayWeather } from './components/apps/weather'; // P01fe
 import { displayNotes } from './components/apps/notes'; // Pee7f
 import { displayCalendar } from './components/apps/calendar'; // P6bb1
+import { displayMusicPlayer } from './components/apps/musicPlayer'; // P075d
+import { displayFileManager } from './components/apps/fileManager'; // P9e9f
+import { displayChat } from './components/apps/chat'; // P81c4
 
 const apps = [
     {
@@ -119,6 +122,33 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayCalendar,
+    },
+    {
+        id: "musicPlayer",
+        title: "Music Player",
+        icon: './themes/Yaru/apps/musicPlayer.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayMusicPlayer,
+    },
+    {
+        id: "fileManager",
+        title: "File Manager",
+        icon: './themes/Yaru/apps/fileManager.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayFileManager,
+    },
+    {
+        id: "chat",
+        title: "Chat",
+        icon: './themes/Yaru/apps/chat.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayChat,
     },
 ]
 
