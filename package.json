@@ -2,12 +2,12 @@
   "name": "kali-linux-portfolio",
   "version": "2.0.0",
   "private": true,
-  "homepage": "https://github.com/x3rcyb/",
+  "homepage": "https://github.com/Konseptt/Kali-portfolio",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "export": "next export"
+    "deploy": "next build && touch out/.nojekyll"
   },
   "engines": {
     "node": ">=16.x"
