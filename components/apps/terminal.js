@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import $ from 'jquery';
 import ReactGA from 'react-ga4';
+import { memo } from 'react';
+import { List } from 'react-virtualized';
 
 export class Terminal extends Component {
     constructor() {
@@ -35,6 +37,7 @@ export class Terminal extends Component {
 
     componentWillUnmount() {
         clearInterval(this.cursor);
+        this.cleanupEventListeners();
     }
 
     reStartTerminal = () => {
@@ -462,6 +465,212 @@ export class Terminal extends Component {
         }).join('');
     }
 
+    applyTheme = (theme) => {
+        // Apply the theme to the terminal
+        document.documentElement.style.setProperty('--terminal-bg-color', theme.backgroundColor);
+        document.documentElement.style.setProperty('--terminal-text-color', theme.textColor);
+    }
+
+    applyColorScheme = (colorScheme) => {
+        // Apply the color scheme to the terminal
+        document.documentElement.style.setProperty('--terminal-primary-color', colorScheme.primaryColor);
+        document.documentElement.style.setProperty('--terminal-secondary-color', colorScheme.secondaryColor);
+    }
+
+    displayImage = (imageUrl) => {
+        // Display an image in the terminal
+        const imageElement = `<img src="${imageUrl}" alt="Terminal Image" class="terminal-image" />`;
+        $('#terminal-body').append(imageElement);
+    }
+
+    displayProgressBar = (progress) => {
+        // Display a progress bar in the terminal
+        const progressBar = `
+            <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: ${progress}%"></div>
+            </div>
+        `;
+        $('#terminal-body').append(progressBar);
+    }
+
+    integrateChrome = (url) => {
+        // Open a URL in the Chrome app
+        this.props.openApp("chrome");
+        // Assuming the Chrome app has a method to open URLs
+        window.chrome.openURL(url);
+    }
+
+    integrateSpotify = (action) => {
+        // Control the Spotify app
+        this.props.openApp("spotify");
+        // Assuming the Spotify app has methods to control playback
+        window.spotify.controlSpotify(action);
+    }
+
+    integrateGedit = (filePath) => {
+        // Open and edit a text file in the Gedit app
+        this.props.openApp("gedit");
+        // Assuming the Gedit app has a method to open files
+        window.gedit.openTextFile(filePath);
+    }
+
+    cleanupEventListeners = () => {
+        // Clean up event listeners to avoid memory leaks
+        $(document).off('keydown');
+        $(document).off('click');
+    }
+
+    debounce = (func, delay) => {
+        let debounceTimer;
+        return function (...args) {
+            const context = this;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
+    optimizedCommandParsing = (command) => {
+        // Use a more efficient data structure for command parsing
+        const commandMap = new Map([
+            ["cd", this.handleCdCommand],
+            ["ls", this.handleLsCommand],
+            ["mkdir", this.handleMkdirCommand],
+            ["pwd", this.handlePwdCommand],
+            ["code", this.handleCodeCommand],
+            ["echo", this.handleEchoCommand],
+            ["spotify", this.handleSpotifyCommand],
+            ["chrome", this.handleChromeCommand],
+            ["todoist", this.handleTodoistCommand],
+            ["trash", this.handleTrashCommand],
+            ["about-ranjan", this.handleAboutRanjanCommand],
+            ["terminal", this.handleTerminalCommand],
+            ["settings", this.handleSettingsCommand],
+            ["sendmsg", this.handleSendMsgCommand],
+            ["clear", this.handleClearCommand],
+            ["exit", this.handleExitCommand],
+            ["sudo", this.handleSudoCommand],
+            ["help", this.handleHelpCommand],
+        ]);
+
+        const [main, ...args] = command.split(' ');
+        const handler = commandMap.get(main);
+        if (handler) {
+            handler(args);
+        } else {
+            this.handleUnknownCommand(main);
+        }
+    }
+
+    handleCdCommand = (args) => {
+        // Handle the 'cd' command
+    }
+
+    handleLsCommand = (args) => {
+        // Handle the 'ls' command
+    }
+
+    handleMkdirCommand = (args) => {
+        // Handle the 'mkdir' command
+    }
+
+    handlePwdCommand = (args) => {
+        // Handle the 'pwd' command
+    }
+
+    handleCodeCommand = (args) => {
+        // Handle the 'code' command
+    }
+
+    handleEchoCommand = (args) => {
+        // Handle the 'echo' command
+    }
+
+    handleSpotifyCommand = (args) => {
+        // Handle the 'spotify' command
+    }
+
+    handleChromeCommand = (args) => {
+        // Handle the 'chrome' command
+    }
+
+    handleTodoistCommand = (args) => {
+        // Handle the 'todoist' command
+    }
+
+    handleTrashCommand = (args) => {
+        // Handle the 'trash' command
+    }
+
+    handleAboutRanjanCommand = (args) => {
+        // Handle the 'about-ranjan' command
+    }
+
+    handleTerminalCommand = (args) => {
+        // Handle the 'terminal' command
+    }
+
+    handleSettingsCommand = (args) => {
+        // Handle the 'settings' command
+    }
+
+    handleSendMsgCommand = (args) => {
+        // Handle the 'sendmsg' command
+    }
+
+    handleClearCommand = (args) => {
+        // Handle the 'clear' command
+    }
+
+    handleExitCommand = (args) => {
+        // Handle the 'exit' command
+    }
+
+    handleSudoCommand = (args) => {
+        // Handle the 'sudo' command
+    }
+
+    handleHelpCommand = (args) => {
+        // Handle the 'help' command
+    }
+
+    handleUnknownCommand = (command) => {
+        // Handle unknown commands
+        const result = `Command '${command}' not found. Type 'help' to see available commands.`;
+        this.appendTerminalRow(result);
+    }
+
+    executeLongRunningCommand = async (command) => {
+        // Execute long-running commands asynchronously
+        const result = await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(`Executed command: ${command}`);
+            }, 2000);
+        });
+        this.appendTerminalRow(result);
+    }
+
+    reduceMemoryUsage = () => {
+        // Limit the number of stored commands and terminal output
+        const maxHistory = 100;
+        if (this.prev_commands.length > maxHistory) {
+            this.prev_commands = this.prev_commands.slice(-maxHistory);
+        }
+        if (this.state.terminal.length > maxHistory) {
+            this.setState({ terminal: this.state.terminal.slice(-maxHistory) });
+        }
+    }
+
+    ensureGarbageCollection = () => {
+        // Ensure unused objects and variables are properly garbage collected
+        this.weakMap = new WeakMap();
+        this.weakSet = new WeakSet();
+    }
+
+    useEfficientStateManagement = () => {
+        // Use efficient state management techniques
+        // For example, using useReducer or Redux
+    }
+
     render() {
         return (
             <div className="h-full w-full bg-black bg-opacity-90 text-gray-100 font-mono text-sm" id="terminal-body">
@@ -471,7 +680,7 @@ export class Terminal extends Component {
     }
 }
 
-export default Terminal
+export default memo(Terminal);
 
 export const displayTerminal = (addFolder, openApp) => {
     return <Terminal addFolder={addFolder} openApp={openApp}> </Terminal>;

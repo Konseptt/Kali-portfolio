@@ -74,6 +74,12 @@ export class Chrome extends Component {
         );
     }
 
+    openURL = (url) => {
+        this.setState({ url, display_url: url });
+        this.storeVisitedUrl(url, url);
+        this.refreshChrome();
+    }
+
     render() {
         return (
             <div className="h-full w-full flex flex-col bg-ub-cool-grey">

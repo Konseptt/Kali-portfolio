@@ -20,3 +20,28 @@ export default function Spotify() {
 export const displaySpotify = () => {
     return <Spotify />
 }
+
+export const controlSpotify = (action) => {
+    const iframe = document.querySelector('iframe[title="Spotify"]');
+    if (!iframe) return;
+
+    const spotifyWindow = iframe.contentWindow;
+    if (!spotifyWindow) return;
+
+    switch (action) {
+        case 'play':
+            spotifyWindow.postMessage({ type: 'play' }, '*');
+            break;
+        case 'pause':
+            spotifyWindow.postMessage({ type: 'pause' }, '*');
+            break;
+        case 'next':
+            spotifyWindow.postMessage({ type: 'next' }, '*');
+            break;
+        case 'previous':
+            spotifyWindow.postMessage({ type: 'previous' }, '*');
+            break;
+        default:
+            console.warn(`Unknown action: ${action}`);
+    }
+}

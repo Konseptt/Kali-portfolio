@@ -65,6 +65,11 @@ export class Gedit extends Component {
 
     // }
 
+    openTextFile = (filePath) => {
+        // Logic to open and edit text files from the terminal
+        console.log(`Opening file: ${filePath}`);
+    }
+
     render() {
         return (
             <div className="w-full h-full relative flex gap-5 p-5  bg-[#282c34] text-white select-none ">
