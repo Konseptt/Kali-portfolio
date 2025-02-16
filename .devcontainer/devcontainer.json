@@ -1,5 +1,6 @@
 {
   "tasks": {
-    "build": "npm install && npm run build"
+    "build": "npm install && npm run build",
+    "test": "echo \"No tests are set up for this project.\""
   }
 }
