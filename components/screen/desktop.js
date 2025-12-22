@@ -7,7 +7,6 @@ import UbuntuApp from '../base/ubuntu_app';
 import AllApplications from '../screen/all-applications'
 import DesktopMenu from '../context menus/desktop-menu';
 import DefaultMenu from '../context menus/default';
-import $ from 'jquery';
 import ReactGA from 'react-ga4';
 
 export class Desktop extends Component {
@@ -111,14 +110,11 @@ export class Desktop extends Component {
         let { posx, posy } = this.getMenuPosition(e);
         let contextMenu = document.getElementById(`${menuName}-menu`);
 
-        if (posx + $(contextMenu).width() > window.innerWidth) posx -= $(contextMenu).width();
-        if (posy + $(contextMenu).height() > window.innerHeight) posy -= $(contextMenu).height();
+        if (posx + contextMenu.offsetWidth > window.innerWidth) posx -= contextMenu.offsetWidth;
+        if (posy + contextMenu.offsetHeight > window.innerHeight) posy -= contextMenu.offsetHeight;
 
-        posx = posx.toString() + "px";
-        posy = posy.toString() + "px";
-
-        contextMenu.style.left = posx;
-        contextMenu.style.top = posy;
+        contextMenu.style.left = posx + "px";
+        contextMenu.style.top = posy + "px";
 
         this.setState({ context_menus: { ...this.state.context_menus, [menuName]: true } });
     }
@@ -346,24 +342,12 @@ export class Desktop extends Component {
             var frequentApps = localStorage.getItem('frequentApps') ? JSON.parse(localStorage.getItem('frequentApps')) : [];
             var currentApp = frequentApps.find(app => app.id === objId);
             if (currentApp) {
-                frequentApps.forEach((app) => {
-                    if (app.id === currentApp.id) {
-                        app.frequency += 1; // increase the frequency if app is found 
-                    }
-                });
+                currentApp.frequency += 1; // increase the frequency if app is found 
             } else {
                 frequentApps.push({ id: objId, frequency: 1 }); // new app opened
             }
 
-            frequentApps.sort((a, b) => {
-                if (a.frequency < b.frequency) {
-                    return 1;
-                }
-                if (a.frequency > b.frequency) {
-                    return -1;
-                }
-                return 0; // sort according to decreasing frequencies
-            });
+            frequentApps.sort((a, b) => b.frequency - a.frequency); // sort according to decreasing frequencies
 
             localStorage.setItem("frequentApps", JSON.stringify(frequentApps));
 
@@ -398,16 +382,13 @@ export class Desktop extends Component {
     focus = (objId) => {
         // removes focus from all window and 
         // gives focus to window with 'id = objId'
-        var focused_windows = this.state.focused_windows;
-        focused_windows[objId] = true;
-        for (let key in focused_windows) {
-            if (focused_windows.hasOwnProperty(key)) {
-                if (key !== objId) {
-                    focused_windows[key] = false;
-                }
-            }
-        }
-        this.setState({ focused_windows });
+        this.setState(prevState => {
+            const focused_windows = Object.keys(prevState.focused_windows).reduce((acc, key) => {
+                acc[key] = key === objId;
+                return acc;
+            }, {});
+            return { focused_windows };
+        });
     }
 
     addNewFolder = () => {

@@ -6,65 +6,64 @@ export class AllApplications extends React.Component {
         super();
         this.state = {
             query: "",
-            apps: [],
             category: 0 // 0 for all, 1 for frequent
         }
+        this.frequentAppsInfo = null;
     }
 
     componentDidMount() {
-        this.setState({
-            apps: this.props.apps
-        })
+        // Cache frequent apps info once on mount
+        this.frequentAppsInfo = JSON.parse(localStorage.getItem("frequentApps"));
     }
 
     handleChange = (e) => {
         this.setState({
-            query: e.target.value,
-            apps: e.target.value === "" || e.target.value === null ?
-                this.props.apps : this.state.apps.filter(
-                    (app) => app.title.toLowerCase().includes(e.target.value.toLowerCase())
-                )
+            query: e.target.value
         })
     }
 
-    renderApps = () => {
-
-        let appsJsx = [];
-        let frequentAppsInfo = JSON.parse(localStorage.getItem("frequentApps"));
-        let getFrequentApps = () => {
-            let frequentApps = [];
-            if (frequentAppsInfo) {
-                frequentAppsInfo.forEach((app_info) => {
-                    let app = this.props.apps.find(app => app.id === app_info.id);
-                    if (app) {
-                        frequentApps.push(app);
-                    }
-                })
-            }
-            return frequentApps;
+    getFrequentApps = () => {
+        let frequentApps = [];
+        if (this.frequentAppsInfo) {
+            this.frequentAppsInfo.forEach((app_info) => {
+                let app = this.props.apps.find(app => app.id === app_info.id);
+                if (app) {
+                    frequentApps.push(app);
+                }
+            })
         }
-
-        let apps = this.state.category === 0 ? [...this.state.apps] : getFrequentApps();
-        apps.forEach((app, index) => {
-            const props = {
-                name: app.title,
-                id: app.id,
-                icon: app.icon,
-                openApp: this.props.openApp
-            }
-
-            appsJsx.push(
-                <UbuntuApp key={index} {...props} />
-            );
-        });
-        return appsJsx;
+        return frequentApps;
     }
 
-    handleSwitch = (category) => {
-        if (category !== this.state.category) {
-            this.setState({
-                category: category
-            })
+    renderApps = () => {
+        let apps = this.state.category === 0 ? this.props.apps : this.getFrequentApps();
+        
+        // Apply search filter if query exists
+        if (this.state.query) {
+            const query = this.state.query.toLowerCase();
+            apps = apps.filter(app => app.title.toLowerCase().includes(query));
+        }
+
+        return apps.map((app, index) => (
+            <UbuntuApp 
+                key={app.id || index}
+                name={app.title}
+                id={app.id}
+                icon={app.icon}
+                openApp={this.props.openApp}
+            />
+        ));
+    }
+
+    handleSwitchToFrequent = () => {
+        if (this.state.category !== 1) {
+            this.setState({ category: 1 });
+        }
+    }
+
+    handleSwitchToAll = () => {
+        if (this.state.category !== 0) {
+            this.setState({ category: 0 });
         }
     }
 
@@ -84,12 +83,12 @@ export class AllApplications extends React.Component {
                     {this.renderApps()}
                 </div>
                 <div className={"flex align-center justify-center w-full fixed bottom-0 mb-15 pr-20  md:pr-20 "}>
-                    <div className={"w-1/4 text-center group text-white bg-transparent cursor-pointer items-center"} onClick={this.handleSwitch.bind(this, 1)}>
+                    <div className={"w-1/4 text-center group text-white bg-transparent cursor-pointer items-center"} onClick={this.handleSwitchToFrequent}>
                         <h4>Frequent</h4>
                         {this.state.category === 1 ? <div className={"h-1 mt-1 bg-ub-orange self-center"} />
                             : <div className={"h-1 mt-1 bg-transparent group-hover:bg-white "} />}
                     </div>
-                    <div className={"w-1/4 text-center group text-white bg-transparent cursor-pointer items-center"} onClick={this.handleSwitch.bind(this, 0)}>
+                    <div className={"w-1/4 text-center group text-white bg-transparent cursor-pointer items-center"} onClick={this.handleSwitchToAll}>
                         <h4>All</h4>
                         {this.state.category === 0 ? <div className={"h-1 mt-1 bg-ub-orange self-center"} />
                             : <div className={"h-1 mt-1 bg-transparent group-hover:bg-white"} />}
