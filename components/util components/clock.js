@@ -28,14 +28,15 @@ export default class Clock extends Component {
         let hour = current_time.getHours();
         let minute = current_time.getMinutes();
         let month = this.month_list[current_time.getMonth()];
-        let date = current_time.getDate().toLocaleString();
+        let date = current_time.getDate();
         let meridiem = (hour < 12 ? "AM" : "PM");
 
-        if (minute.toLocaleString().length === 1) {
-            minute = "0" + minute
+        if (minute < 10) {
+            minute = "0" + minute;
         }
 
         if (this.state.hour_12 && hour > 12) hour -= 12;
+        if (this.state.hour_12 && hour === 0) hour = 12;
 
         let display_time;
         if (this.props.onlyTime) {

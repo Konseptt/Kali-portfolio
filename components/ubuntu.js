@@ -27,14 +27,20 @@ export default class Ubuntu extends Component {
 	};
 
 	getLocalData = () => {
+		// Batch read all localStorage values at once
+		const localData = {
+			bg_image_name: localStorage.getItem('bg-image'),
+			booting_screen: localStorage.getItem('booting_screen'),
+			shut_down: localStorage.getItem('shut-down'),
+			screen_locked: localStorage.getItem('screen-locked')
+		};
+
 		// Get Previously selected Background Image
-		let bg_image_name = localStorage.getItem('bg-image');
-		if (bg_image_name !== null && bg_image_name !== undefined) {
-			this.setState({ bg_image_name });
+		if (localData.bg_image_name !== null && localData.bg_image_name !== undefined) {
+			this.setState({ bg_image_name: localData.bg_image_name });
 		}
 
-		let booting_screen = localStorage.getItem('booting_screen');
-		if (booting_screen !== null && booting_screen !== undefined) {
+		if (localData.booting_screen !== null && localData.booting_screen !== undefined) {
 			// user has visited site before
 			this.setState({ booting_screen: false });
 		} else {
@@ -44,13 +50,13 @@ export default class Ubuntu extends Component {
 		}
 
 		// get shutdown state
-		let shut_down = localStorage.getItem('shut-down');
-		if (shut_down !== null && shut_down !== undefined && shut_down === 'true') this.shutDown();
+		if (localData.shut_down !== null && localData.shut_down !== undefined && localData.shut_down === 'true') {
+			this.shutDown();
+		}
 		else {
 			// Get previous lock screen state
-			let screen_locked = localStorage.getItem('screen-locked');
-			if (screen_locked !== null && screen_locked !== undefined) {
-				this.setState({ screen_locked: screen_locked === 'true' ? true : false });
+			if (localData.screen_locked !== null && localData.screen_locked !== undefined) {
+				this.setState({ screen_locked: localData.screen_locked === 'true' });
 			}
 		}
 	};

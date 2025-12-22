@@ -152,82 +152,49 @@ export class Desktop extends Component {
     }
 
     fetchAppsData = () => {
-        let focused_windows = {}, closed_windows = {}, disabled_apps = {}, favourite_apps = {}, overlapped_windows = {}, minimized_windows = {};
-        let desktop_apps = [];
-        apps.forEach((app) => {
-            focused_windows = {
-                ...focused_windows,
-                [app.id]: false,
-            };
-            closed_windows = {
-                ...closed_windows,
-                [app.id]: true,
-            };
-            disabled_apps = {
-                ...disabled_apps,
-                [app.id]: app.disabled,
-            };
-            favourite_apps = {
-                ...favourite_apps,
-                [app.id]: app.favourite,
-            };
-            overlapped_windows = {
-                ...overlapped_windows,
-                [app.id]: false,
-            };
-            minimized_windows = {
-                ...minimized_windows,
-                [app.id]: false,
-            }
-            if (app.desktop_shortcut) desktop_apps.push(app.id);
+        const initialState = apps.reduce((acc, app) => {
+            acc.focused_windows[app.id] = false;
+            acc.closed_windows[app.id] = true;
+            acc.disabled_apps[app.id] = app.disabled;
+            acc.favourite_apps[app.id] = app.favourite;
+            acc.overlapped_windows[app.id] = false;
+            acc.minimized_windows[app.id] = false;
+            if (app.desktop_shortcut) acc.desktop_apps.push(app.id);
+            return acc;
+        }, {
+            focused_windows: {},
+            closed_windows: {},
+            disabled_apps: {},
+            favourite_apps: {},
+            overlapped_windows: {},
+            minimized_windows: {},
+            desktop_apps: []
         });
-        this.setState({
-            focused_windows,
-            closed_windows,
-            disabled_apps,
-            favourite_apps,
-            overlapped_windows,
-            minimized_windows,
-            desktop_apps
-        });
-        this.initFavourite = { ...favourite_apps };
+
+        this.setState(initialState);
+        this.initFavourite = { ...initialState.favourite_apps };
     }
 
     updateAppsData = () => {
-        let focused_windows = {}, closed_windows = {}, favourite_apps = {}, minimized_windows = {}, disabled_apps = {};
-        let desktop_apps = [];
-        apps.forEach((app) => {
-            focused_windows = {
-                ...focused_windows,
-                [app.id]: ((this.state.focused_windows[app.id] !== undefined || this.state.focused_windows[app.id] !== null) ? this.state.focused_windows[app.id] : false),
-            };
-            minimized_windows = {
-                ...minimized_windows,
-                [app.id]: ((this.state.minimized_windows[app.id] !== undefined || this.state.minimized_windows[app.id] !== null) ? this.state.minimized_windows[app.id] : false)
-            };
-            disabled_apps = {
-                ...disabled_apps,
-                [app.id]: app.disabled
-            };
-            closed_windows = {
-                ...closed_windows,
-                [app.id]: ((this.state.closed_windows[app.id] !== undefined || this.state.closed_windows[app.id] !== null) ? this.state.closed_windows[app.id] : true)
-            };
-            favourite_apps = {
-                ...favourite_apps,
-                [app.id]: app.favourite
-            }
-            if (app.desktop_shortcut) desktop_apps.push(app.id);
+        const updatedState = apps.reduce((acc, app) => {
+            acc.focused_windows[app.id] = this.state.focused_windows[app.id] ?? false;
+            acc.minimized_windows[app.id] = this.state.minimized_windows[app.id] ?? false;
+            acc.disabled_apps[app.id] = app.disabled;
+            acc.closed_windows[app.id] = this.state.closed_windows[app.id] ?? true;
+            acc.favourite_apps[app.id] = app.favourite;
+            if (app.desktop_shortcut) acc.desktop_apps.push(app.id);
+            return acc;
+        }, {
+            focused_windows: {},
+            closed_windows: {},
+            disabled_apps: {},
+            minimized_windows: {},
+            favourite_apps: {},
+            desktop_apps: []
         });
-        this.setState({
-            focused_windows,
-            closed_windows,
-            disabled_apps,
-            minimized_windows,
-            favourite_apps,
-            desktop_apps
-        });
-        this.initFavourite = { ...favourite_apps };
+
+        this.setState(updatedState);
+        this.initFavourite = { ...updatedState.favourite_apps };
     }
 
     renderDesktopApps = () => {
